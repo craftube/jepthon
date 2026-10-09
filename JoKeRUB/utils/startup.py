@@ -86,10 +86,11 @@ async def setup_bot():
             Config.OWNER_ID = utils.get_peer_id(l313l.me)
         if not check_dyno_type:
             LOGS.error("قد تحدث مشكلة ولن يعمل السورس لان نوع الداينو ليس بيسك قم بتحويله الى basic")
-    except Exception as e:
-        LOGS.error(f"كـود تيرمكس - {str(e)}")
-        sys.exit()
-
+try:
+    # الكود الموجود حالياً عند السطر 90 (الخاص بالربط على 8000)
+    server_socket.bind(('0.0.0.0', 8000))
+except Exception as e:
+    print(f"Bypassing Termux WebServer on Koyeb: {e}")
 async def startupmessage():
     """
     Start up message in telegram logger group
