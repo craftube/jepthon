@@ -74,14 +74,14 @@ async def setup_bot():
                 break
         bot_details = await l313l.tgbot.get_me()
         Config.TG_BOT_USERNAME = f"@{bot_details.username}"
-try:
-        app = web.AppRunner(await web_server())
-        await app.setup()
-        bind_address = "0.0.0.0"
-        redaport = Config.PORT
-        await web.TCPSite(app, bind_address, redaport).start()
-    except Exception as e:
-        print(f"Bypassing web server port issue on Koyeb: {e}")
+
+    # await web.TCPSite(app, bind_address, redaport).start()
+
+   app = web.AppRunner(await web_server())
+    await app.setup()
+    bind_address = "0.0.0.0"
+    redaport = Config.PORT
+    # await web.TCPSite(app, bind_address, redaport).start()
 
     l313l.me = await l313l.get_me()
     l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
@@ -89,6 +89,7 @@ try:
         Config.OWNER_ID = utils.get_peer_id(l313l.me)
     if not check_dyno_type:
         LOGS.error("قد تحدث مشكلة ولن يعمل السورس لان نوع الداينو ليس بيسك قم بتحويله الى basic")
+
 
 async def startupmessage():
     """
