@@ -1,16 +1,18 @@
-# 1. استيراد الأحداث الأساسية
+import sys
+import subprocess
+
+# 1. استيراد الأحداث والأدوات الأساسية
 try:
     from .events import *
 except Exception:
     pass
 
-# 2. استيراد extmod بأمان في حال عدم وجوده
 try:
     from .extmod import *
 except Exception:
     pass
 
-# 3. استيراد الموديولات الأساسية وتربيطها بأمان
+# 2. ربط الموديولات الرئيسية
 try:
     from . import format as _format
 except Exception:
@@ -35,10 +37,26 @@ except Exception:
     except Exception:
         _cattools = None
 
-# 4. تصدير كافة المحتويات
+# 3. تصدير كافة المحتويات الداخلية
 try:
     from .format import *
     from .catutils import *
     from .cattools import *
 except Exception:
     pass
+
+# 4. توفير دالة install_pip للبدائل في حال عدم وجودها
+if "install_pip" not in globals():
+    def install_pip(pip_name):
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", pip_name])
+            return True
+        except Exception:
+            return False
+
+# 5. توفير دالة reply_id للبدائل
+if "reply_id" not in globals():
+    def reply_id(event):
+        if hasattr(event, "reply_to_msg_id") and event.reply_to_msg_id:
+            return event.reply_to_msg_id
+        return None
