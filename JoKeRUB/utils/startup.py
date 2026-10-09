@@ -27,9 +27,10 @@ from ..sql_helper.global_collection import (
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
 from .pluginmanager import load_module
 from .tools import create_supergroup
+
 LOGS = logging.getLogger("aljoker")
 logging.getLogger('telethon').setLevel(logging.WARNING)
-##Reda hands here
+
 cmdhr = Config.COMMAND_HAND_LER
 bot = l313l
 ENV = bool(os.environ.get("ENV", False))
@@ -56,9 +57,7 @@ async def check_dyno_type():
     return True
 
 async def setup_bot():
-    """
-    To set up bot for JoKeRUB
-    """
+    """تجهيز بيانات الحساب وإلغاء سيرفر تيرمكس لتوافق Koyeb"""
     try:
         await l313l.connect()
         config = await l313l(functions.help.GetConfigRequest())
@@ -74,14 +73,13 @@ async def setup_bot():
                 break
         bot_details = await l313l.tgbot.get_me()
         Config.TG_BOT_USERNAME = f"@{bot_details.username}"
+    except Exception as e:
+        LOGS.error(f"Setup connect error: {e}")
 
-   # Bypassing Termux WebServer completely for Koyeb
     l313l.me = await l313l.get_me()
     l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
     if Config.OWNER_ID == 0:
         Config.OWNER_ID = utils.get_peer_id(l313l.me)
-    if not check_dyno_type:
-        LOGS.error("قد تحدث مشكلة ولن يعمل السورس لان نوع الداينو ليس بيسك قم بتحويله الى basic")
 
 async def startupmessage():
     """
@@ -122,7 +120,6 @@ async def startupmessage():
     except Exception as e:
         LOGS.error(e)
         return None
-
 
 async def mybot():
     try:
@@ -165,7 +162,6 @@ async def ipchange():
             pass
         return "ip change"
 
-
 async def add_bot_to_logger_group(chat_id):
     """
     To add bot to logger groups
@@ -189,18 +185,18 @@ async def add_bot_to_logger_group(chat_id):
             )
         except Exception as e:
             LOGS.error(str(e))
-#by @jepthon بس اشوفك خامطه للكود اهينك وافضحك
+
 JoKeRUB = {"@jepthon", "@jepthonsupport"}
 async def saves():
-   for lMl10l in JoKeRUB:
+    for lMl10l in JoKeRUB:
         try:
-             await l313l(JoinChannelRequest(channel=lMl10l))
+            await l313l(JoinChannelRequest(channel=lMl10l))
         except OverflowError:
             LOGS.error("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
             continue
         except ChannelPrivateError:
             continue
-                
+
 async def load_plugins(folder, extfolder=None):
     """
     تحميل ملفات السورس
@@ -259,8 +255,7 @@ async def load_plugins(folder, extfolder=None):
             BOTLOG_CHATID,
             f'- تم بنجاح استدعاء الاوامر الاضافيه \n**عدد الملفات التي استدعيت:** `{success}`\n**فشل في استدعاء :** `{", ".join(failure)}`',
         )
-#شعندك هنا تبحوش ياحلو 😉
-#سورس الجوكر عمك
+
 async def aljoker_the_best(l313l, group_name):
     async for dialog in l313l.iter_dialogs():
         if dialog.is_group and dialog.title == group_name:
