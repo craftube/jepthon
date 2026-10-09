@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 
-WORKDIR /app
+# تحديد مجلد العمل الأساسي كما يتوقعه السورس بالضبط
+WORKDIR /root/JoKeRUB
 
 # تثبيت كافة حزم النظام المطلوبة
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,16 +19,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
-# نسخ ملفات مستودعك المعدلة مباشرة بدلاً من سحب السورس الأصلي
-COPY . .
+# نسخ جميع ملفات مستودعك إلى مجلد /root/JoKeRUB
+COPY . /root/JoKeRUB
 
-# تثبيت متطلبات البايثون
+# تعريف مسار البايثون لتلافي أخطاء الاستيراد
+ENV PYTHONPATH=/root/JoKeRUB:$PYTHONPATH
+
+# تحديث وتثبيت مكتبات البايثون
 RUN pip install --no-cache-dir -U pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-#working directory 
-WORKDIR /root/JoKeRUB
-
-ENV PATH="/home/JoKeRUB/bin:$PATH"
-
-CMD ["python3","-m","JoKeRUB"]
+# أمر التشغيل المباشر
+CMD ["python3", "-m", "JoKeRUB"]
