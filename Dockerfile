@@ -28,6 +28,6 @@ ENV PYTHONPATH=/root/JoKeRUB:$PYTHONPATH
 # تحديث وتثبيت مكتبات البايثون
 RUN pip install --no-cache-dir -U pip
 RUN pip install --no-cache-dir -r requirements.txt
-
+CMD ["python3", "start.py"]
 # أمر التشغيل المباشر
 CMD ["python3", "-m", "JoKeRUB"]
