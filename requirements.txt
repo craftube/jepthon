@@ -81,3 +81,4 @@ git+https://github.com/sandy1709/py-googletrans
 git+https://github.com/redaiq90/webcolors
 lxml_html_clean
 moviepy==1.0.3
+nest_asyncio
