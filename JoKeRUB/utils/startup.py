@@ -87,10 +87,9 @@ async def setup_bot():
         if not check_dyno_type:
             LOGS.error("قد تحدث مشكلة ولن يعمل السورس لان نوع الداينو ليس بيسك قم بتحويله الى basic")
 try:
-    # الكود الموجود حالياً عند السطر 90 (الخاص بالربط على 8000)
     server_socket.bind(('0.0.0.0', 8000))
 except Exception as e:
-    print(f"Bypassing Termux WebServer on Koyeb: {e}")
+    print(f"Bypassing port 8000 error on Koyeb: {e}")
 async def startupmessage():
     """
     Start up message in telegram logger group
