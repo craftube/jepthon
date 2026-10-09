@@ -1,4 +1,3 @@
-# config values will be loaded from here
 import os
 from typing import Set
 from telethon.tl.types import ChatBannedRights
@@ -14,15 +13,14 @@ class Config(object):
     ALIVE_NAME = os.environ.get("ALIVE_NAME", None)
     # MUST NEEDED VARS
     # Get the values for following 2 from my.telegram.org
-    APP_ID = int(os.environ.get("APP_ID") or os.environ.get("API_ID") or 0)
-    API_HASH = os.environ.get("API_HASH",) or None
+    APP_ID = 28138597
+    API_HASH = 4f9d59a935c666667622993276fba2c9
     # Datbase url heroku sets it automatically else get this from elephantsql
-    DB_URI = os.environ.get("DATABASE_URL", None)
+    DB_URI = postgres://koyeb-adm:npg_S6eQUHBKwlA8@ep-wandering-bread-a2qh2361.eu-central-1.pg.koyeb.app/koyebdb
     # Get this value by running python3 stringsetup.py or https://repl.it/@sandeep1709/generatestringsession
-    STRING_SESSION = os.environ.get("STRING_SESSION", None)
+    STRING_SESSION = 1BJWap1wBuxmeLrpcT1vfzhHSGw9bHh2i_uW9kUigbvL-Wedlq1KdSmxP0Hga-9ikUYzR1eMyh1BYgRNEuRgyLI3JNNdJG9wpP29ExyGX6ijTpJ8IhAdFxitzI6lEnBxHkWZbEtpXrVk2kh30rIrjSim5EVRn34BqyEAZR3DqWSedZv1115HIZcJ3cz8bIfvjIvz117vgK0K4PO3yNagNWd5R1OojoU1YjbXjqSo807hTjjqxgCotwOpj-xnX0CgXsYlAxwNXCXvC0gPC7N8lXnTbYe1RWLyb6nfmYQvl4v2vcl6DqghZbO3C3Qow1J87q-kDIZZgus9GaK_BBkWAZW_vwWWmWfE=
     # Telegram BOT Token and bot username from @BotFather
-    TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN") or os.environ.get(
-        "TG_BOT_TOKEN_BF_HER", None
+    TG_BOT_TOKEN = 8738135820:AAHCQ7m3DRiFMfViumckCTA-Y2_QaQI4Zx4
     )
     TG_BOT_USERNAME = None
     # get this value from http://www.timezoneconverter.com/cgi-bin/findzone.tzc
