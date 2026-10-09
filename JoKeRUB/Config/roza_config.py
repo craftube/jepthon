@@ -1,10 +1,10 @@
 # config values will be loaded from here
-
 import os
+from typing import Set
+from telethon.tl.types import ChatBannedRights
 
-ENV = bool(os.environ.get("ENV", False))
 
-if ENV:
+class Config(object):
     LOGGER = True
     PORT = os.environ.get("PORT", None)
     A_PIC = os.environ.get("A_PIC", None)
