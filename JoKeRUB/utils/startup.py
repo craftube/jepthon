@@ -74,12 +74,11 @@ async def setup_bot():
                 break
         bot_details = await l313l.tgbot.get_me()
         Config.TG_BOT_USERNAME = f"@{bot_details.username}"
-        
-app = web.AppRunner(await web_server())
-    await app.setup()
-    bind_address = "0.0.0.0"
-    redaport = Config.PORT
-    try:
+try:
+        app = web.AppRunner(await web_server())
+        await app.setup()
+        bind_address = "0.0.0.0"
+        redaport = Config.PORT
         await web.TCPSite(app, bind_address, redaport).start()
     except Exception as e:
         print(f"Bypassing web server port issue on Koyeb: {e}")
