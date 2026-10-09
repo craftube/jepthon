@@ -1,3 +1,27 @@
+import os
+import sys
+import runpy
+
+# أجبار البايثون على إضافة مسار الملف الحالي إلى قائمة المكتبات
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+
+print("=" * 40)
+print(f"Starting bot from directory: {current_dir}")
+print("=" * 40)
+
+# تشغيل موديل JoKeRUB
+try:
+    runpy.run_module("JoKeRUB", run_name="__main__")
+except Exception as e:
+    print(f"Error starting module: {e}")
+    # محاولة تشغيل جيبثون باسم فرعي في حال اختلفت تسمية المجلد
+    try:
+        runpy.run_module("jepthon", run_name="__main__")
+    except Exception as err:
+        print(f"Secondary error: {err}")
+
+
 #    جميع الحقوق لمطوري سورس جـيبثون حصريا لهم فقط
 #    اذا تخمط الملف اذك الحقوق وكاتبيه ومطوريه لا تحذف الحقوق وتصير فاشل 👍
 #    كتابة الشسد 
