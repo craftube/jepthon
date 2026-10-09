@@ -1,5 +1,22 @@
-FROM jepthoniq/jepthon:slim-buster
+FROM python:3.10-slim
 
+WORKDIR /app
+
+# تثبيت الحزم الأساسية للنظام
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    ffmpeg \
+    libsqlite3-dev \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# نسخ ملفات السورس
+COPY . .
+
+# تحديث وتثبيت المكتبات
+RUN pip install --no-cache-dir -U pip
+RUN pip install --no-cache-dir -r requirements.txt
 #clonning repo 
 RUN git clone https://github.com/jepthoniq/jepthon.git /root/JoKeRUB
 #working directory 
