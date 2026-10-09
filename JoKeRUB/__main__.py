@@ -78,13 +78,11 @@ async def externalrepo():
 l313l.loop.run_until_complete(externalrepo())
 l313l.loop.run_until_complete(startup_process())
 
-if len(sys.argv) not in (1, 3, 4):
-    l313l.disconnect()
-elif not Catcheck.sucess:
-    if HEROKU_APP is not None:
-        HEROKU_APP.restart()
-else:
-    try:
-        l313l.run_until_disconnected()
-    except ConnectionError:
-        pass
+import nest_asyncio
+nest_asyncio.apply()
+
+try:
+    bot.run_until_disconnected()
+except Exception:
+    import asyncio
+    asyncio.get_event_loop().run_forever()
