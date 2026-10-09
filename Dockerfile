@@ -2,13 +2,15 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# تثبيت الحزم الأساسية للنظام
+# تثبيت الحزم الأساسية للنظام ومتطلبات psycopg2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     ffmpeg \
     libsqlite3-dev \
     gcc \
     python3-dev \
+    build-essential \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # نسخ ملفات السورس
