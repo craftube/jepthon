@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# تثبيت جميع حزم النظام والاعتماديات بما فيها Node.js و NPM
+# تثبيت كافة حزم النظام المطلوبة
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
@@ -18,14 +18,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
-# نسخ كافة ملفات السورس
+# نسخ ملفات مستودعك المعدلة مباشرة بدلاً من سحب السورس الأصلي
 COPY . .
 
-# تحديث وتثبيت مكتبات البايثون
+# تثبيت متطلبات البايثون
 RUN pip install --no-cache-dir -U pip
 RUN pip install --no-cache-dir -r requirements.txt
-#clonning repo 
-RUN git clone https://github.com/jepthoniq/jepthon.git /root/JoKeRUB
+
 #working directory 
 WORKDIR /root/JoKeRUB
 
