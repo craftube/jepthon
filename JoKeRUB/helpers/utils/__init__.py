@@ -1,7 +1,16 @@
-from .events import *
-from .extmod import *
+# 1. استيراد الأحداث الأساسية
+try:
+    from .events import *
+except Exception:
+    pass
 
-# ربط ملف format.py بالاسم المطلوب _format
+# 2. استيراد extmod بأمان في حال عدم وجوده
+try:
+    from .extmod import *
+except Exception:
+    pass
+
+# 3. استيراد الموديولات الأساسية وتربيطها بأمان
 try:
     from . import format as _format
 except Exception:
@@ -10,7 +19,6 @@ except Exception:
     except Exception:
         _format = None
 
-# ربط ملف catutils.py بالاسم المطلوب _catutils
 try:
     from . import catutils as _catutils
 except Exception:
@@ -19,7 +27,6 @@ except Exception:
     except Exception:
         _catutils = None
 
-# ربط ملف cattools.py بالاسم المطلوب _cattools
 try:
     from . import cattools as _cattools
 except Exception:
@@ -28,7 +35,7 @@ except Exception:
     except Exception:
         _cattools = None
 
-# تصدير الدوال العامة
+# 4. تصدير كافة المحتويات
 try:
     from .format import *
     from .catutils import *
