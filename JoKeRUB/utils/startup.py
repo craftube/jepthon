@@ -76,8 +76,7 @@ async def setup_bot():
         Config.TG_BOT_USERNAME = f"@{bot_details.username}"
 
     # await web.TCPSite(app, bind_address, redaport).start()
-
-   app = web.AppRunner(await web_server())
+app = web.AppRunner(await web_server())
     await app.setup()
     bind_address = "0.0.0.0"
     redaport = Config.PORT
