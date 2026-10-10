@@ -57,25 +57,27 @@ async def check_dyno_type():
     return True
 
 async def setup_bot():
-    """قفل شامل لمنع تنفيذ التهيئة وسيرفر الويب مرتين ولحماية بوت المساعد"""
-    if getattr(l313l, '_setup_done', False):
+    """قفل جذري بملف النظام /tmp لمنع التكرار حتى لو اشتغل المساعد بمسار مستقل"""
+    lock_file = Path("/tmp/joker_setup_active.lock")
+    if lock_file.exists():
         return
-    l313l._setup_done = True
 
     try:
-        if not hasattr(l313l, '_koyeb_server_started'):
-            app = web.AppRunner(await web_server())
-            await app.setup()
-            bind_address = "0.0.0.0"
-            redaport = Config.PORT or 8000
-            site = web.TCPSite(app, bind_address, redaport)
-            await site.start()
-            l313l._koyeb_server_started = True
-            LOGS.info(f"Web server started successfully on port {redaport} for Koyeb health check.")
+        app = web.AppRunner(await web_server())
+        await app.setup()
+        bind_address = "0.0.0.0"
+        redaport = Config.PORT or 8000
+        site = web.TCPSite(app, bind_address, redaport)
+        await site.start()
+        lock_file.touch()
+        LOGS.info(f"Web server started successfully on port {redaport} for Koyeb health check.")
     except Exception as e:
-        LOGS.info(f"Web server port already bound or bypassed: {e}")
+        lock_file.touch()
+        LOGS.info(f"Web server status bypassed: {e}")
 
-    await l313l.connect()
+    if not l313l.is_connected():
+        await l313l.connect()
+
     config = await l313l(functions.help.GetConfigRequest())
     for option in config.dc_options:
         if option.ip_address == l313l.session.server_address:
@@ -278,7 +280,7 @@ async def aljoker_the_best(l313l, group_name):
 
 async def verifyLoggerGroup():
     """
-    Will verify both loggers group (Fixed to prevent infinite restart loop on Koyeb)
+    Will verify both loggers group (Fixed with file lock)
     """
     if BOTLOG:
         try:
