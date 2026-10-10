@@ -3,6 +3,7 @@ import asyncio
 import glob
 import os
 import sys
+import socket
 from telethon.errors.rpcerrorlist import ChannelPrivateError
 import urllib.request
 from datetime import timedelta
@@ -57,23 +58,33 @@ async def check_dyno_type():
     return True
 
 async def setup_bot():
-    """تشغيل سيرفر الويب حصراً لليوزربرت الرئيسي وتخطي بوت المساعد لمنع التكرار"""
-    if "assistant" in sys.argv[0] or "assistant" in os.getcwd():
-        LOGS.info("Assistant process detected: skipping web server & re-setup.")
-        return
-
+    """فحص السوكت الحقيقي للبورت لتجنب تكرار التشغيل وErrno 98 نهائياً"""
+    redaport = Config.PORT or 8000
+    
+    # فحص ما إذا كان البورت مستخدماً بالفعل عبر الـ Socket
+    port_in_use = False
     try:
-        app = web.AppRunner(await web_server())
-        await app.setup()
-        bind_address = "0.0.0.0"
-        redaport = Config.PORT or 8000
-        site = web.TCPSite(app, bind_address, redaport)
-        await site.start()
-        LOGS.info(f"Web server started successfully on port {redaport} for Koyeb health check.")
-    except Exception as e:
-        LOGS.info(f"Web server port already bound or bypassed: {e}")
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            port_in_use = (s.connect_ex(('127.0.0.1', redaport)) == 0)
+    except Exception:
+        pass
 
-    await l313l.connect()
+    if not port_in_use:
+        try:
+            app = web.AppRunner(await web_server())
+            await app.setup()
+            site = web.TCPSite(app, "0.0.0.0", redaport)
+            await site.start()
+            LOGS.info(f"Web server started successfully on port {redaport} for Koyeb health check.")
+        except Exception as e:
+            LOGS.info(f"Web server bind note: {e}")
+    else:
+        LOGS.info(f"Port {redaport} is already active, skipping web server startup.")
+
+    if not l313l.is_connected():
+        await l313l.connect()
+
     config = await l313l(functions.help.GetConfigRequest())
     for option in config.dc_options:
         if option.ip_address == l313l.session.server_address:
