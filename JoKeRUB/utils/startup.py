@@ -3,7 +3,6 @@ import asyncio
 import glob
 import os
 import sys
-import socket
 from telethon.errors.rpcerrorlist import ChannelPrivateError
 import urllib.request
 from datetime import timedelta
@@ -58,33 +57,25 @@ async def check_dyno_type():
     return True
 
 async def setup_bot():
-    """فحص السوكت الحقيقي للبورت لتجنب تكرار التشغيل وErrno 98 نهائياً"""
-    redaport = Config.PORT or 8000
-    
-    # فحص ما إذا كان البورت مستخدماً بالفعل عبر الـ Socket
-    port_in_use = False
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(0.5)
-            port_in_use = (s.connect_ex(('127.0.0.1', redaport)) == 0)
-    except Exception:
-        pass
-
-    if not port_in_use:
+    """تشغيل سيرفر الويب مرة واحدة مطلقة عبر قفل نظامي لمنع Errno 98"""
+    web_lock = Path("/tmp/koyeb_web_server.lock")
+    if not web_lock.exists():
         try:
+            web_lock.touch()
             app = web.AppRunner(await web_server())
             await app.setup()
+            redaport = Config.PORT or 8000
             site = web.TCPSite(app, "0.0.0.0", redaport)
             await site.start()
-            LOGS.info(f"Web server started successfully on port {redaport} for Koyeb health check.")
-        except Exception as e:
-            LOGS.info(f"Web server bind note: {e}")
-    else:
-        LOGS.info(f"Port {redaport} is already active, skipping web server startup.")
+            LOGS.info(f"Web server started successfully on port {redaport}.")
+        except Exception:
+            pass
 
-    if not l313l.is_connected():
-        await l313l.connect()
+    if getattr(l313l, '_telegram_setup_done', False):
+        return
+    l313l._telegram_setup_done = True
 
+    await l313l.connect()
     config = await l313l(functions.help.GetConfigRequest())
     for option in config.dc_options:
         if option.ip_address == l313l.session.server_address:
