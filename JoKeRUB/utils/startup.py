@@ -272,9 +272,8 @@ async def aljoker_the_best(l313l, group_name):
 
 async def verifyLoggerGroup():
     """
-    Will verify both loggers group
+    Will verify both loggers group (Fixed to prevent infinite restart loop on Koyeb)
     """
-    flag = False
     if BOTLOG:
         try:
             entity = await l313l.get_entity(BOTLOG_CHATID)
@@ -311,7 +310,7 @@ async def verifyLoggerGroup():
             )
             addgvar("PRIVATE_GROUP_BOT_API_ID", groupid)
             print("᯽︙تم إنشاء مجموعة المسـاعدة بنجاح وإضافتها إلى المتغيرات.")
-        flag = True
+            
     if PM_LOGGER_GROUP_ID == -100:
         descript = "᯽︙ وظيفه الكروب يحفظ رسائل الخاص اذا ما تريد الامر احذف الكروب نهائي \n  - @Jepthon"
         photobt = await l313l.upload_file(file="l313l/razan/resources/start/Jepthon2.JPEG")
@@ -325,12 +324,6 @@ async def verifyLoggerGroup():
             )
             addgvar("PM_LOGGER_GROUP_ID", groupid)
             print("تـم عمـل الكروب التخزين بنـجاح واضافة الـفارات الـيه.")
-        flag = True
-    if flag:
-        executable = sys.executable.replace(" ", "\\ ")
-        args = [executable, "-m", "JoKeRUB"]
-        os.execle(executable, *args, os.environ)
-        sys.exit(0)
 
 async def install_externalrepo(repo, branch, cfolder):
     jokerREPO = repo
