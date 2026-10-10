@@ -57,13 +57,7 @@ async def check_dyno_type():
     return True
 
 async def setup_bot():
-    """تجهيز بيانات الحساب وتشغيل سيرفر الويب بدون try"""
-    app = web.AppRunner(await web_server())
-    await app.setup()
-    bind_address = "0.0.0.0"
-    redaport = Config.PORT
-    await web.TCPSite(app, bind_address, redaport).start()
-
+    """تجهيز بيانات الحساب بدون تضارب في البورت"""
     await l313l.connect()
     config = await l313l(functions.help.GetConfigRequest())
     for option in config.dc_options:
@@ -78,6 +72,11 @@ async def setup_bot():
             break
     bot_details = await l313l.tgbot.get_me()
     Config.TG_BOT_USERNAME = f"@{bot_details.username}"
+
+    l313l.me = await l313l.get_me()
+    l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
+    if Config.OWNER_ID == 0:
+        Config.OWNER_ID = utils.get_peer_id(l313l.me)
 
     l313l.me = await l313l.get_me()
     l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
