@@ -55,26 +55,6 @@ async def check_dyno_type():
                 return False
     return True
 
-async def setup_bot():
-    """
-    To set up bot for JoKeRUB
-    """
-    try:
-        await l313l.connect()
-        config = await l313l(functions.help.GetConfigRequest())
-        for option in config.dc_options:
-            if option.ip_address == l313l.session.server_address:
-                if l313l.session.dc_id != option.id:
-                    LOGS.warning(
-                        f"⌯︙معرف ثابت في الجلسة من {l313l.session.dc_id}"
-                        f"⌯︙لـ  {option.id}"
-                    )
-                l313l.session.set_dc(option.id, option.ip_address, option.port)
-                l313l.session.save()
-                break
-        bot_details = await l313l.tgbot.get_me()
-        Config.TG_BOT_USERNAME = f"@{bot_details.username}"
-        
 async def startupmessage():
     """
     Start up message in telegram logger group
