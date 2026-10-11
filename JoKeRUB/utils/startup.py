@@ -27,10 +27,9 @@ from ..sql_helper.global_collection import (
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
 from .pluginmanager import load_module
 from .tools import create_supergroup
-
 LOGS = logging.getLogger("aljoker")
 logging.getLogger('telethon').setLevel(logging.WARNING)
-
+##Reda hands here
 cmdhr = Config.COMMAND_HAND_LER
 bot = l313l
 ENV = bool(os.environ.get("ENV", False))
@@ -57,43 +56,39 @@ async def check_dyno_type():
     return True
 
 async def setup_bot():
-    """تشغيل سيرفر الويب مرة واحدة مطلقة عبر قفل نظامي لمنع Errno 98"""
-    web_lock = Path("/tmp/koyeb_web_server.lock")
-    if not web_lock.exists():
-        try:
-            web_lock.touch()
-            app = web.AppRunner(await web_server())
-            await app.setup()
-            redaport = Config.PORT or 8000
-            site = web.TCPSite(app, "0.0.0.0", redaport)
-            await site.start()
-            LOGS.info(f"Web server started successfully on port {redaport}.")
-        except Exception:
-            pass
-
-    if getattr(l313l, '_telegram_setup_done', False):
-        return
-    l313l._telegram_setup_done = True
-
-    await l313l.connect()
-    config = await l313l(functions.help.GetConfigRequest())
-    for option in config.dc_options:
-        if option.ip_address == l313l.session.server_address:
-            if l313l.session.dc_id != option.id:
-                LOGS.warning(
-                    f"⌯︙معرف ثابت في الجلسة من {l313l.session.dc_id}"
-                    f"⌯︙لـ  {option.id}"
-                )
-            l313l.session.set_dc(option.id, option.ip_address, option.port)
-            l313l.session.save()
-            break
-    bot_details = await l313l.tgbot.get_me()
-    Config.TG_BOT_USERNAME = f"@{bot_details.username}"
-
-    l313l.me = await l313l.get_me()
-    l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
-    if Config.OWNER_ID == 0:
-        Config.OWNER_ID = utils.get_peer_id(l313l.me)
+    """
+    To set up bot for JoKeRUB
+    """
+    try:
+        await l313l.connect()
+        config = await l313l(functions.help.GetConfigRequest())
+        for option in config.dc_options:
+            if option.ip_address == l313l.session.server_address:
+                if l313l.session.dc_id != option.id:
+                    LOGS.warning(
+                        f"⌯︙معرف ثابت في الجلسة من {l313l.session.dc_id}"
+                        f"⌯︙لـ  {option.id}"
+                    )
+                l313l.session.set_dc(option.id, option.ip_address, option.port)
+                l313l.session.save()
+                break
+        bot_details = await l313l.tgbot.get_me()
+        Config.TG_BOT_USERNAME = f"@{bot_details.username}"
+        
+        app = web.AppRunner(await web_server())
+        await app.setup()
+        bind_address = "0.0.0.0"
+        redaport = Config.PORT
+        await web.TCPSite(app, bind_address, redaport).start()
+        l313l.me = await l313l.get_me()
+        l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
+        if Config.OWNER_ID == 0:
+            Config.OWNER_ID = utils.get_peer_id(l313l.me)
+        if not check_dyno_type:
+            LOGS.error("قد تحدث مشكلة ولن يعمل السورس لان نوع الداينو ليس بيسك قم بتحويله الى basic")
+    except Exception as e:
+        LOGS.error(f"كـود تيرمكس - {str(e)}")
+        sys.exit()
 
 async def startupmessage():
     """
@@ -134,6 +129,7 @@ async def startupmessage():
     except Exception as e:
         LOGS.error(e)
         return None
+
 
 async def mybot():
     try:
@@ -176,6 +172,7 @@ async def ipchange():
             pass
         return "ip change"
 
+
 async def add_bot_to_logger_group(chat_id):
     """
     To add bot to logger groups
@@ -199,18 +196,18 @@ async def add_bot_to_logger_group(chat_id):
             )
         except Exception as e:
             LOGS.error(str(e))
-
+#by @jepthon بس اشوفك خامطه للكود اهينك وافضحك
 JoKeRUB = {"@jepthon", "@jepthonsupport"}
 async def saves():
-    for lMl10l in JoKeRUB:
+   for lMl10l in JoKeRUB:
         try:
-            await l313l(JoinChannelRequest(channel=lMl10l))
+             await l313l(JoinChannelRequest(channel=lMl10l))
         except OverflowError:
             LOGS.error("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
             continue
         except ChannelPrivateError:
             continue
-
+                
 async def load_plugins(folder, extfolder=None):
     """
     تحميل ملفات السورس
@@ -269,7 +266,8 @@ async def load_plugins(folder, extfolder=None):
             BOTLOG_CHATID,
             f'- تم بنجاح استدعاء الاوامر الاضافيه \n**عدد الملفات التي استدعيت:** `{success}`\n**فشل في استدعاء :** `{", ".join(failure)}`',
         )
-
+#شعندك هنا تبحوش ياحلو 😉
+#سورس الجوكر عمك
 async def aljoker_the_best(l313l, group_name):
     async for dialog in l313l.iter_dialogs():
         if dialog.is_group and dialog.title == group_name:
@@ -280,6 +278,7 @@ async def verifyLoggerGroup():
     """
     Will verify both loggers group
     """
+    flag = False
     if BOTLOG:
         try:
             entity = await l313l.get_entity(BOTLOG_CHATID)
@@ -316,7 +315,7 @@ async def verifyLoggerGroup():
             )
             addgvar("PRIVATE_GROUP_BOT_API_ID", groupid)
             print("᯽︙تم إنشاء مجموعة المسـاعدة بنجاح وإضافتها إلى المتغيرات.")
-            
+        flag = True
     if PM_LOGGER_GROUP_ID == -100:
         descript = "᯽︙ وظيفه الكروب يحفظ رسائل الخاص اذا ما تريد الامر احذف الكروب نهائي \n  - @Jepthon"
         photobt = await l313l.upload_file(file="l313l/razan/resources/start/Jepthon2.JPEG")
@@ -330,6 +329,12 @@ async def verifyLoggerGroup():
             )
             addgvar("PM_LOGGER_GROUP_ID", groupid)
             print("تـم عمـل الكروب التخزين بنـجاح واضافة الـفارات الـيه.")
+        flag = True
+    if flag:
+        executable = sys.executable.replace(" ", "\\ ")
+        args = [executable, "-m", "JoKeRUB"]
+        os.execle(executable, *args, os.environ)
+        sys.exit(0)
 
 async def install_externalrepo(repo, branch, cfolder):
     jokerREPO = repo
