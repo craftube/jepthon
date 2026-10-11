@@ -55,6 +55,37 @@ async def check_dyno_type():
                 return False
     return True
 
+
+async def setup_bot():
+    """
+    To set up bot for JoKeRUB
+    """
+    try:
+        await l313l.connect()
+        config = await l313l(functions.help.GetConfigRequest())
+        for option in config.dc_options:
+            if option.ip_address == l313l.session.server_address:
+                if l313l.session.dc_id != option.id:
+                    LOGS.warning(
+                        f"ايـدي DC ثـابت فـي الجلسـة مـن {l313l.session.dc_id}"
+                        f" الـى {option.id}"
+                    )
+                l313l.session.set_dc(option.id, option.ip_address, option.port)
+                l313l.session.save()
+                break
+        bot_details = await l313l.tgbot.get_me()
+        Config.TG_BOT_USERNAME = f"@{bot_details.username}"
+        l313l.me = await l313l.get_me()
+        l313l.uid = l313l.tgbot.uid = utils.get_peer_id(l313l.me)
+        if Config.OWNER_ID == 0:
+            Config.OWNER_ID = utils.get_peer_id(l313l.me)
+    except Exception as e:
+        LOGS.error(f"كـود تيرمكس - {str(e)}")
+        sys.exit()
+
+
+
+
 async def startupmessage():
     """
     Start up message in telegram logger group
